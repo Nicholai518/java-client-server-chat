@@ -99,7 +99,7 @@ public class Main {
 				// When the break keyword is encountered inside a loop in Java, the loop is immediately terminated
 				// and the program control resumes at the next statement following the loop.
 				// the loop here is the while(true)
-				if (messageToSend.equalsIgnoreCase("Shut down")) {
+				if (messageToSend.equalsIgnoreCase("QUIT")) {
 
 					// console output to notify client the session has ended
 					System.out.println("Your session has been ended.");
