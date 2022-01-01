@@ -40,7 +40,7 @@ public class Main {
 		// Confirmation that the client session has started
 		System.out.println("The client session has started.");
 		System.out.println("Type Commands below:");
-		System.out.println(" ");
+		System.out.println();
 		try {
 			// instanciate socket
 			socket = new Socket("localhost", 1234);
@@ -65,6 +65,8 @@ public class Main {
 			// this will run forever, this is an infinite loop
 			// infinite look is broken by command "Shut down" which will use a break statement
 			while (true) {
+				System.out.print("> ");
+
 				// the clients message
 				String messageToSend = scanner.nextLine();
 

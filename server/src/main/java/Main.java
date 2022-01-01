@@ -60,8 +60,10 @@ public class Main {
 					// output message to the console
 					System.out.println("client: " + messageFromClient);
 
+					String response = "echo: " + messageFromClient;
+
 					// send response back to client
-					bufferedWriter.write("Message received. ");
+					bufferedWriter.write(response);
 					// adds a new line for spacing / formatting purposes
 					bufferedWriter.newLine();
 					// forcing to flush
