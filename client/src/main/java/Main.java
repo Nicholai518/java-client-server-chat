@@ -7,6 +7,8 @@ public class Main {
 		// create socket class
 		Socket socket = null;
 
+		CliUI ui = new CliUI();
+
 		try {
 			// instantiate socket
 			socket = new Socket("localhost", 1234);
@@ -18,12 +20,18 @@ public class Main {
 			inboundThread.start();
 			outboundThread.start();
 
-			while(!socket.isClosed()) {}
+			// render the "UI" initially
+			ui.render();
 
-			// Confirmation that the client session has started
-			System.out.println("The client session has started.");
-			System.out.println("Type Commands below:");
-			System.out.println();
+			inboundThread.onMessageReceived((msg) -> {
+				// update UI and re-render anytime we
+				// receive a new message
+				ui.addMessage(msg);
+				ui.render();
+			});
+
+			// while loop keeps client from closing until the socket closes
+			while (!socket.isClosed()) {}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

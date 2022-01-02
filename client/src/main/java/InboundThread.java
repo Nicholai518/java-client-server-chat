@@ -2,11 +2,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.function.Consumer;
 
 public class InboundThread extends Thread {
 
 	// fields
 	private final Socket socket;
+	private Consumer<String> onMessageReceivedCallback;
 
 	// constructors
 	public InboundThread(Socket socket) {
@@ -23,7 +25,9 @@ public class InboundThread extends Thread {
 			while (!socket.isClosed()) {
 				// We are going to receive messages from the server
 				String message = bufferedReader.readLine();
-				System.out.println(message);
+				if (this.onMessageReceivedCallback != null) {
+					this.onMessageReceivedCallback.accept(message);
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -49,5 +53,9 @@ public class InboundThread extends Thread {
 	// accessors
 	public Socket getSocket() {
 		return socket;
+	}
+
+	public void onMessageReceived(Consumer<String> onMessageReceivedCallback) {
+		this.onMessageReceivedCallback = onMessageReceivedCallback;
 	}
 }

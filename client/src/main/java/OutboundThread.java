@@ -30,8 +30,6 @@ public class OutboundThread extends Thread {
 			Scanner scanner = new Scanner(System.in);
 
 			while (!socket.isClosed()) {
-				System.out.print("> ");
-
 				// the clients message
 				String messageToSend = scanner.nextLine();
 
