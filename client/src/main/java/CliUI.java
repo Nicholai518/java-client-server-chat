@@ -2,8 +2,6 @@ import java.util.Date;
 
 public class CliUI {
 
-	long lastRenderedTimeMilli = 0;
-
 	LimitedQueue<String> messages = new LimitedQueue<>(10);
 
 	public void addMessage(String message) {
