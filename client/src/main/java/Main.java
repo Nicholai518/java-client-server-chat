@@ -37,10 +37,6 @@ public class Main {
 		BufferedWriter bufferedWriter = null;
 
 
-		// Confirmation that the client session has started
-		System.out.println("The client session has started.");
-		System.out.println("Type Commands below:");
-		System.out.println();
 		try {
 			// instanciate socket
 			socket = new Socket("localhost", 1234);
@@ -61,6 +57,11 @@ public class Main {
 
 			// using Scanner class because we are taking in input from the console
 			Scanner scanner = new Scanner(System.in);
+
+			// Confirmation that the client session has started
+			System.out.println("The client session has started.");
+			System.out.println("Type Commands below:");
+			System.out.println();
 
 			// this will run forever, this is an infinite loop
 			// infinite look is broken by command "Shut down" which will use a break statement
