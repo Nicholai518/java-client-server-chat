@@ -3,11 +3,19 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 public class Main {
 	// code is very similar to client-project-one
 	public static void main(String[] args) throws IOException {
+
+		// Map to hold all our client connections
+		// Should use ConcurrentHashMap because multiple threads could access at same time
+		// ConcurrentHashMap helps avoid thread lock and other "thread safety" issues
+		// Key, Value = port, serverThread
+		Map<Integer, ServerThread> activeConnections = new ConcurrentHashMap<>();
 
 		// main difference from client is this ServerSocket object
 		// A server socket waits for requests to come in over the network.
@@ -30,17 +38,40 @@ public class Main {
 				// Once connected, a Socket object is returned that can be used to communicate with the client
 				Socket socket = serverSocket.accept();
 
-				// Create a ServerThread using the socket
+				// Create a ServerThread using the socket for each connected client
 				ServerThread serverThread = new ServerThread(socket);
+
+				// add the severThread / connection to our map
+				activeConnections.put(serverThread.getSocketPort(), serverThread);
 
 				// Server console output
 				log.info("client connected: {}", socket.getRemoteSocketAddress());
+
+				// This is a consumer method
+				// we are telling serverThread call the callback anytime it has input
+				// "be ready for when we have input"
+				serverThread.onMessage((input) -> {
+					// log the client message
+					log.info("message received from client. client: {}, msg: {}",
+							serverThread.getSocketAddress(),
+							input);
+
+					// This is called a broadcast
+					// send message to the other clients connected to server
+					for (Map.Entry<Integer, ServerThread> entry : activeConnections.entrySet()) {
+						ServerThread peer = entry.getValue();
+						log.info("broadcasting message from {} to {}. msg: {}",
+								serverThread.getSocketAddress(),
+								peer.getSocketAddress(),
+								input);
+						peer.sendMessage(input);
+					}
+				});
 
 				// calling start() method on thread
 				// allows this thread to be started on a new core
 				// which will call the .run() method
 				serverThread.start();
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

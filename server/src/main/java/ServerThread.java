@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.util.function.Consumer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,12 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ServerThread extends Thread {
 
 	// fields
-	String input = null;
-	BufferedReader inputStream = null;
-	BufferedWriter outputStream = null;
+	private String input = null;
+	private BufferedReader inputStream = null;
+	private BufferedWriter outputStream = null;
 
 	// final means this field cannot be re-assigned
 	private final Socket socket;
+	private Consumer<String> onMessageCallback;
 
 	// constructors
 	public ServerThread(Socket socket) {
@@ -55,21 +58,10 @@ public class ServerThread extends Thread {
 
 			// while the socket is NOT closed and the client message is NOT QUIT_COMMAND
 			while (!socket.isClosed() && !input.equalsIgnoreCase(QUIT_COMMAND)) {
-				// log the client message
-				log.info("client message: {}", input);
 
-				// store input for echo response back to client
-				String response = "echo: " + input;
-
-				// log the echo response sent back to the client
-				log.info("server response: {}", response);
-
-				// writing the response to the buffer
-				outputStream.write(response);
-				// this indicates that the response / message is complete. This is a terminating character
-				outputStream.newLine();
-				// flush the buffer, which will send this response over the network
-				outputStream.flush();
+				if (this.onMessageCallback != null) {
+					this.onMessageCallback.accept(input);
+				}
 
 				// wait for a new message from the client, then while loop will run again if conditions are met
 				input = inputStream.readLine();
@@ -104,5 +96,34 @@ public class ServerThread extends Thread {
 				log.error("socket close error", e);
 			}
 		}
+	}
+
+	public void onMessage(Consumer<String> callback) {
+		this.onMessageCallback = callback;
+	}
+
+	public void sendMessage(String response) {
+		try {
+			// writing the response to the buffer
+			outputStream.write(response);
+			// this indicates that the response / message is complete. This is a terminating character
+			outputStream.newLine();
+			// flush the buffer, which will send this response over the network
+			outputStream.flush();
+		} catch (IOException e) {
+			log.error("failed to send message {}, {}",
+					this.getName(),
+					this.socket.getRemoteSocketAddress(),
+					e);
+		}
+	}
+
+	// getters / accessors
+	public int getSocketPort() {
+		return socket.getPort();
+	}
+
+	public SocketAddress getSocketAddress() {
+		return socket.getRemoteSocketAddress();
 	}
 }
