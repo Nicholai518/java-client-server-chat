@@ -4,6 +4,15 @@ import java.net.Socket;
 
 public class Main {
 	public static void main(String[] args) {
+
+		String host = "localhost";
+		int port = 1234;
+
+		if (args.length > 0) {
+			host = args[0];
+			port = Integer.parseInt(args[1]);
+		}
+
 		// create socket class
 		Socket socket = null;
 
@@ -11,7 +20,7 @@ public class Main {
 
 		try {
 			// instantiate socket
-			socket = new Socket("localhost", 1234);
+			socket = new Socket(host, port);
 
 			// create inbound and outbound threads
 			InboundThread inboundThread = new InboundThread(socket);
