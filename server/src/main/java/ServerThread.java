@@ -6,7 +6,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.function.Consumer;
-
 import lombok.extern.slf4j.Slf4j;
 
 // The `Slf4j` annotation provides this class with access to a logger
