@@ -51,7 +51,6 @@ public class ServerThread extends Thread {
 		}
 
 		try {
-
 			// read the client message, store in the input field
 			input = inputStream.readLine();
 
@@ -72,9 +71,9 @@ public class ServerThread extends Thread {
 			// the client closed the connection with the server while was performing tasks
 			log.error("client {} closed abruptly", this.getName(), e);
 		} finally {
-			// if client successfully closes connection, log it
-			// closing streams for security purposes
 			try {
+				// if client successfully closes connection, log it
+				// closing streams for security purposes
 				log.info("client closing: {}, {}", this.getName(), socket.getRemoteSocketAddress());
 
 				if (inputStream != null) {
