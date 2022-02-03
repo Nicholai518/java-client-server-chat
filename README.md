@@ -1,6 +1,6 @@
 # java-client-server-chat
 
-A CLI application that supports multiple clients to communicate by connecting to a server / port.
+This project implements a socket server in Java that allows multiple clients to communicate using a CLI.
 
 ## Building Client Artifacts
 
