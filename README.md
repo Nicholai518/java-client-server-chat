@@ -22,4 +22,5 @@ java -jar client-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 ## Motivation
 
-This project was implemented to prepare for Computer Communications class.
+- This project was implemented to gain experience with threading / multithreading. 
+- Simulates chat / messaging aspect of a game 
